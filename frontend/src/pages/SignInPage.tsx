@@ -1,5 +1,6 @@
 import { FormEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { API_BASE } from '../services/api'
 
 function SignInPage() {
   const navigate = useNavigate()
@@ -18,7 +19,7 @@ function SignInPage() {
       body.set('username', username)
       body.set('password', password)
 
-      const response = await fetch('http://localhost:8000/api/v1/auth/login', {
+      const response = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -47,39 +48,6 @@ function SignInPage() {
     }
   }
 
-  const handleDemoAccess = () => {
-    setLoginError(null)
-    setIsSigningIn(true)
-
-    const body = new URLSearchParams()
-    body.set('username', 'admin')
-    body.set('password', 'admin123')
-
-    fetch('http://localhost:8000/api/v1/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body,
-    })
-      .then(async (response) => {
-        const payload = await response.json().catch(() => null)
-        if (!response.ok || !payload?.access_token) {
-          throw new Error(payload?.detail || 'Demo login failed')
-        }
-
-        window.localStorage.setItem('ai-portfolio-token', payload.access_token)
-        window.localStorage.setItem('ai-portfolio-user', JSON.stringify(payload.user ?? {}))
-        navigate('/', { replace: true })
-      })
-      .catch((error) => {
-        setLoginError(String(error instanceof Error ? error.message : error))
-      })
-      .finally(() => {
-        setIsSigningIn(false)
-      })
-  }
-
   return (
     <div className="signin-shell">
       <div className="signin-backdrop signin-backdrop-one" />
@@ -93,18 +61,6 @@ function SignInPage() {
             Sign in with your organization’s identity provider to access a premium dashboard for upload validation,
             portfolio health, and branch performance.
           </p>
-
-          <div className="signin-highlights">
-            <article>
-              <div aria-hidden="true">&nbsp;</div>
-            </article>
-            <article>
-              <div aria-hidden="true">&nbsp;</div>
-            </article>
-            <article>
-              <div aria-hidden="true">&nbsp;</div>
-            </article>
-          </div>
         </section>
 
         <section className="signin-form-panel">
@@ -144,14 +100,6 @@ function SignInPage() {
             </button>
           </form>
 
-          <button
-            type="button"
-            className="demo-access-button demo-access-secondary"
-            onClick={handleDemoAccess}
-            disabled={isSigningIn}
-          >
-            {isSigningIn ? 'Starting demo…' : 'Enter demo dashboard'}
-          </button>
         </section>
       </main>
     </div>

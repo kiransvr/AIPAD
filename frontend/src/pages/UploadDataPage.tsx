@@ -1,5 +1,6 @@
 import { ChangeEvent, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { requestJson } from '../services/api'
 
 type UploadResponse = {
   status?: string
@@ -12,11 +13,11 @@ type UploadResponse = {
   details?: Record<string, unknown>
 }
 
-const API_BASE = 'http://localhost:8000/api/v1/upload'
-
-const getAuthHeaders = (): Record<string, string> => {
-  const token = window.localStorage.getItem('ai-portfolio-token')
-  return token ? { Authorization: `Bearer ${token}` } : {}
+type RowValidationError = {
+  row: number
+  column: string
+  issue: string
+  value?: string | null
 }
 
 function UploadDataPage() {
@@ -29,17 +30,7 @@ function UploadDataPage() {
   const sampleCsvUrl = '/sample-data/portfolio-upload-sample.csv'
 
   useEffect(() => {
-    fetch(`${API_BASE}/sample`, {
-      headers: {
-        ...getAuthHeaders(),
-      },
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`Sample template unavailable (${res.status})`)
-        }
-        return res.json()
-      })
+    requestJson<Record<string, unknown>>('/upload/sample')
       .then((data) => setSampleTemplate(data))
       .catch(() => setSampleTemplate(null))
   }, [])
@@ -71,29 +62,10 @@ function UploadDataPage() {
     setStatusMessage('Uploading file...')
 
     try {
-      const res = await fetch(API_BASE, {
+      const payload = (await requestJson<UploadResponse>('/upload', {
         method: 'POST',
-        headers: {
-          ...getAuthHeaders(),
-        },
         body: formData,
-      })
-
-      const payload = (await res.json().catch(() => null)) as UploadResponse | null
-
-      if (res.status === 401) {
-        window.localStorage.removeItem('ai-portfolio-token')
-        window.localStorage.removeItem('ai-portfolio-user')
-        throw new Error('Session expired or invalid token. Please sign in again.')
-      }
-
-      if (res.status === 403) {
-        throw new Error('Upload requires admin, risk, branch-manager, or loan-officer role.')
-      }
-
-      if (!res.ok) {
-        throw new Error(payload?.error || payload?.message || `Upload failed with status ${res.status}`)
-      }
+      })) as UploadResponse
 
       setResponse(payload)
       setStatusMessage('Upload completed successfully.')
@@ -109,18 +81,7 @@ function UploadDataPage() {
 
   const fetchUploadStatus = async () => {
     try {
-      const res = await fetch(`${API_BASE}/status`, {
-        headers: {
-          ...getAuthHeaders(),
-        },
-      })
-
-      const payload = (await res.json().catch(() => null)) as Record<string, unknown> | null
-
-      if (!res.ok || !payload) {
-        return
-      }
-
+      const payload = await requestJson<Record<string, unknown>>('/upload/status')
       setUploadStatus(payload)
     } catch {
       // Keep UI non-blocking if status fetch fails.
@@ -142,6 +103,14 @@ function UploadDataPage() {
   const uploadSummary = response?.summary && typeof response.summary === 'object'
     ? (response.summary as Record<string, unknown>)
     : null
+
+  const validationDetails = response?.details && typeof response.details === 'object'
+    ? (response.details as Record<string, unknown>)
+    : null
+
+  const rowErrors = Array.isArray(validationDetails?.row_errors)
+    ? (validationDetails?.row_errors as RowValidationError[])
+    : []
 
   return (
     <div className="container analytics-page">
@@ -211,6 +180,37 @@ function UploadDataPage() {
             <details className="upload-details">
               <summary>View raw backend response</summary>
               <pre className="debug-info upload-response">{JSON.stringify(response, null, 2)}</pre>
+            </details>
+          )}
+
+          {rowErrors.length > 0 && (
+            <details className="upload-details" open>
+              <summary>Validation errors ({rowErrors.length})</summary>
+              <div className="upload-validation-table-wrap">
+                <table className="upload-validation-table">
+                  <thead>
+                    <tr>
+                      <th>Row</th>
+                      <th>Column</th>
+                      <th>Issue</th>
+                      <th>Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rowErrors.slice(0, 50).map((item, index) => (
+                      <tr key={`${item.row}-${item.column}-${index}`}>
+                        <td>{item.row}</td>
+                        <td>{item.column}</td>
+                        <td>{item.issue}</td>
+                        <td>{item.value ?? 'empty'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {rowErrors.length > 50 && (
+                <p className="status-text">Showing first 50 row errors. Fix and re-upload to validate again.</p>
+              )}
             </details>
           )}
 

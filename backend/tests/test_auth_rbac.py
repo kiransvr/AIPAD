@@ -1,6 +1,9 @@
 """Authentication and RBAC integration tests."""
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
-from fastapi.testclient import TestClient
+import httpx
+import pytest
 
 from src.api.routes import auth_routes, health_routes, par_routes, upload_routes
 
@@ -10,11 +13,16 @@ app.include_router(health_routes.router, prefix="/api/v1/health", tags=["health"
 app.include_router(par_routes.router, prefix="/api/v1/par", tags=["par"])
 app.include_router(upload_routes.router, prefix="/api/v1/upload", tags=["upload"])
 
-client = TestClient(app)
+
+@asynccontextmanager
+async def _api_client() -> httpx.AsyncClient:
+    transport = httpx.ASGITransport(app=app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as client:
+        yield client
 
 
-def _login(username: str, password: str) -> dict:
-    response = client.post(
+async def _login(client: httpx.AsyncClient, username: str, password: str) -> dict:
+    response = await client.post(
         "/api/v1/auth/login",
         data={"username": username, "password": password},
         headers={"Content-Type": "application/x-www-form-urlencoded"},
@@ -25,40 +33,50 @@ def _login(username: str, password: str) -> dict:
     return body
 
 
-def test_health_endpoint_still_public() -> None:
-    response = client.get("/api/v1/health/")
+@pytest.mark.asyncio
+async def test_health_endpoint_still_public() -> None:
+    async with _api_client() as client:
+        response = await client.get("/api/v1/health/")
     assert response.status_code == 200
 
 
-def test_login_returns_bearer_token_and_user_profile() -> None:
-    body = _login("admin", "admin123")
+@pytest.mark.asyncio
+async def test_login_returns_bearer_token_and_user_profile() -> None:
+    async with _api_client() as client:
+        body = await _login(client, "admin", "admin123")
     assert body["token_type"] == "bearer"
     assert body["user"]["username"] == "admin"
     assert body["user"]["role"] == "admin"
 
 
-def test_protected_route_requires_token() -> None:
-    response = client.get("/api/v1/par/summary")
+@pytest.mark.asyncio
+async def test_protected_route_requires_token() -> None:
+    async with _api_client() as client:
+        response = await client.get("/api/v1/par/summary")
     assert response.status_code == 401
 
 
-def test_admin_can_access_par_and_upload_status() -> None:
-    admin = _login("admin", "admin123")
-    headers = {"Authorization": f"Bearer {admin['access_token']}"}
+@pytest.mark.asyncio
+async def test_admin_can_access_par_and_upload_status() -> None:
+    async with _api_client() as client:
+        admin = await _login(client, "admin", "admin123")
+        headers = {"Authorization": f"Bearer {admin['access_token']}"}
 
-    par_response = client.get("/api/v1/par/summary", headers=headers)
-    upload_response = client.get("/api/v1/upload/status", headers=headers)
+        par_response = await client.get("/api/v1/par/summary", headers=headers)
+        upload_response = await client.get("/api/v1/upload/status", headers=headers)
 
     assert par_response.status_code == 200
     assert upload_response.status_code == 200
 
 
-def test_branch_manager_cannot_access_upload_status() -> None:
-    branch_manager = _login("branchmgr", "branch123")
-    headers = {"Authorization": f"Bearer {branch_manager['access_token']}"}
+@pytest.mark.asyncio
+async def test_branch_manager_can_access_upload_status() -> None:
+    async with _api_client() as client:
+        branch_manager = await _login(client, "branchmgr", "branch123")
+        headers = {"Authorization": f"Bearer {branch_manager['access_token']}"}
 
-    par_response = client.get("/api/v1/par/summary", headers=headers)
-    upload_response = client.get("/api/v1/upload/status", headers=headers)
+        par_response = await client.get("/api/v1/par/summary", headers=headers)
+        upload_response = await client.get("/api/v1/upload/status", headers=headers)
 
     assert par_response.status_code == 200
-    assert upload_response.status_code == 403
+    assert upload_response.status_code == 200

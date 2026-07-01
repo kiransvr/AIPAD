@@ -20,6 +20,58 @@ LATEST_UPLOAD_META = UPLOAD_DIR / "latest_upload.json"
 
 ALLOWED_EXTENSIONS = {".xlsx", ".xls", ".csv"}
 
+REQUIRED_COLUMNS = [
+    "AccountNo",
+    "AccountName",
+    "BranchName",
+    "LoanAmount",
+    "OutstandingBalance",
+    "AgeDays",
+    "DefaultedInst",
+]
+
+
+def _append_row_error(
+    row_errors: list[dict[str, Any]],
+    row_number: int,
+    column: str,
+    issue: str,
+    value: Any,
+    max_errors: int,
+) -> None:
+    if len(row_errors) >= max_errors:
+        return
+    row_errors.append(
+        {
+            "row": int(row_number),
+            "column": column,
+            "issue": issue,
+            "value": None if pd.isna(value) else str(value),
+        }
+    )
+
+
+def _canonicalize_required_columns(df: pd.DataFrame) -> tuple[pd.DataFrame, list[str], dict[str, str]]:
+    trimmed_columns = [str(column).strip() for column in df.columns]
+    dataframe = df.copy()
+    dataframe.columns = trimmed_columns
+
+    lookup = {column.lower(): column for column in dataframe.columns}
+    rename_map: dict[str, str] = {}
+    missing_columns: list[str] = []
+
+    for required in REQUIRED_COLUMNS:
+        matched = lookup.get(required.lower())
+        if not matched:
+            missing_columns.append(required)
+            continue
+        rename_map[matched] = required
+
+    if rename_map:
+        dataframe = dataframe.rename(columns=rename_map)
+
+    return dataframe, missing_columns, rename_map
+
 
 def validate_file(filename: str) -> bool:
     """Validate file extension."""
@@ -42,59 +94,170 @@ def process_csv_file(file_path: Path) -> pd.DataFrame:
         raise HTTPException(status_code=400, detail=f"Failed to read CSV file: {str(exc)}") from exc
 
 
-def validate_loan_data(df: pd.DataFrame) -> dict[str, Any]:
-    """Validate loan data and generate summary statistics."""
-    required_columns = [
-        "AccountNo",
-        "AccountName",
-        "BranchName",
-        "LoanAmount",
-        "OutstandingBalance",
-        "AgeDays",
-        "DefaultedInst",
-    ]
+def validate_loan_data(df: pd.DataFrame) -> tuple[dict[str, Any], pd.DataFrame | None]:
+    """Validate loan data, return a strict validation report and normalized dataframe."""
+    if df.empty:
+        return (
+            {
+                "valid": False,
+                "error": "Uploaded file contains no data rows.",
+                "expected_columns": REQUIRED_COLUMNS,
+                "found_columns": list(df.columns),
+                "error_count": 1,
+                "row_errors": [],
+            },
+            None,
+        )
 
-    # Check for required columns (case-insensitive)
-    df_columns_lower = {col.lower(): col for col in df.columns}
-    required_lower = {col.lower() for col in required_columns}
-
-    missing_columns = required_lower - set(df_columns_lower.keys())
+    normalized_df, missing_columns, _ = _canonicalize_required_columns(df)
 
     if missing_columns:
-        return {
-            "valid": False,
-            "error": f"Missing required columns: {', '.join(missing_columns)}",
-            "expected_columns": required_columns,
-            "found_columns": list(df.columns),
-        }
+        return (
+            {
+                "valid": False,
+                "error": f"Missing required columns: {', '.join(missing_columns)}",
+                "expected_columns": REQUIRED_COLUMNS,
+                "found_columns": list(df.columns),
+                "error_count": len(missing_columns),
+                "row_errors": [],
+            },
+            None,
+        )
+
+    validation_df = normalized_df.copy()
+    row_errors: list[dict[str, Any]] = []
+    max_errors = 200
+
+    for column in ["AccountNo", "AccountName", "BranchName"]:
+        series = validation_df[column].astype(str).str.strip()
+        empty_mask = validation_df[column].isna() | (series == "")
+        for index in validation_df.index[empty_mask]:
+            _append_row_error(
+                row_errors,
+                row_number=int(index) + 2,
+                column=column,
+                issue="Required text field is empty.",
+                value=validation_df.at[index, column],
+                max_errors=max_errors,
+            )
+
+        validation_df[column] = series
+
+    numeric_specs = {
+        "LoanAmount": {"allow_negative": False, "must_be_int": False},
+        "OutstandingBalance": {"allow_negative": False, "must_be_int": False},
+        "AgeDays": {"allow_negative": False, "must_be_int": True},
+        "DefaultedInst": {"allow_negative": False, "must_be_int": True},
+    }
+
+    for column, spec in numeric_specs.items():
+        converted = pd.to_numeric(validation_df[column], errors="coerce")
+
+        invalid_mask = converted.isna()
+        for index in validation_df.index[invalid_mask]:
+            _append_row_error(
+                row_errors,
+                row_number=int(index) + 2,
+                column=column,
+                issue="Value must be numeric.",
+                value=validation_df.at[index, column],
+                max_errors=max_errors,
+            )
+
+        if spec["must_be_int"]:
+            non_int_mask = (~invalid_mask) & ((converted % 1) != 0)
+            for index in validation_df.index[non_int_mask]:
+                _append_row_error(
+                    row_errors,
+                    row_number=int(index) + 2,
+                    column=column,
+                    issue="Value must be an integer.",
+                    value=validation_df.at[index, column],
+                    max_errors=max_errors,
+                )
+
+        if not spec["allow_negative"]:
+            negative_mask = (~invalid_mask) & (converted < 0)
+            for index in validation_df.index[negative_mask]:
+                _append_row_error(
+                    row_errors,
+                    row_number=int(index) + 2,
+                    column=column,
+                    issue="Value must be >= 0.",
+                    value=validation_df.at[index, column],
+                    max_errors=max_errors,
+                )
+
+        validation_df[column] = converted
+
+    balance_over_loan_mask = (
+        validation_df["OutstandingBalance"].notna()
+        & validation_df["LoanAmount"].notna()
+        & (validation_df["OutstandingBalance"] > validation_df["LoanAmount"])
+    )
+    for index in validation_df.index[balance_over_loan_mask]:
+        _append_row_error(
+            row_errors,
+            row_number=int(index) + 2,
+            column="OutstandingBalance",
+            issue="OutstandingBalance cannot exceed LoanAmount.",
+            value=validation_df.at[index, "OutstandingBalance"],
+            max_errors=max_errors,
+        )
+
+    if row_errors:
+        return (
+            {
+                "valid": False,
+                "error": "Validation failed. Fix the highlighted rows and upload again.",
+                "expected_columns": REQUIRED_COLUMNS,
+                "found_columns": list(df.columns),
+                "rows_processed": int(len(validation_df)),
+                "error_count": len(row_errors),
+                "row_errors": row_errors,
+            },
+            None,
+        )
 
     try:
-        total_accounts = len(df)
-        total_portfolio = df["LoanAmount"].sum() if "LoanAmount" in df.columns else 0
+        total_accounts = len(validation_df)
+        total_portfolio = validation_df["LoanAmount"].sum()
 
         # PAR is accounts with 30+ days arrears.
-        par_accounts = len(df[df.get("AgeDays", 0) >= 30]) if "AgeDays" in df.columns else 0
+        par_accounts = int((validation_df["AgeDays"] >= 30).sum())
         par_ratio = (par_accounts / total_accounts * 100) if total_accounts > 0 else 0
 
         # NPL is accounts with 90+ days arrears.
-        npl_accounts = len(df[df.get("AgeDays", 0) >= 90]) if "AgeDays" in df.columns else 0
+        npl_accounts = int((validation_df["AgeDays"] >= 90).sum())
         npl_ratio = (npl_accounts / total_accounts * 100) if total_accounts > 0 else 0
 
-        return {
-            "valid": True,
-            "total_accounts": int(total_accounts),
-            "total_portfolio": float(total_portfolio),
-            "par_accounts": int(par_accounts),
-            "par_ratio": round(float(par_ratio), 2),
-            "npl_accounts": int(npl_accounts),
-            "npl_ratio": round(float(npl_ratio), 2),
-            "rows_processed": int(total_accounts),
-        }
+        return (
+            {
+                "valid": True,
+                "total_accounts": int(total_accounts),
+                "total_portfolio": float(total_portfolio),
+                "par_accounts": int(par_accounts),
+                "par_ratio": round(float(par_ratio), 2),
+                "npl_accounts": int(npl_accounts),
+                "npl_ratio": round(float(npl_ratio), 2),
+                "rows_processed": int(total_accounts),
+                "error_count": 0,
+                "row_errors": [],
+            },
+            validation_df,
+        )
     except Exception as exc:
-        return {
-            "valid": False,
-            "error": f"Error processing data: {str(exc)}",
-        }
+        return (
+            {
+                "valid": False,
+                "error": f"Error processing data: {str(exc)}",
+                "expected_columns": REQUIRED_COLUMNS,
+                "found_columns": list(df.columns),
+                "error_count": 1,
+                "row_errors": [],
+            },
+            None,
+        )
 
 
 def get_uploaded_dataframe() -> pd.DataFrame | None:
@@ -137,7 +300,8 @@ def get_uploaded_dataframe() -> pd.DataFrame | None:
         uploaded_data["dataframe"] = dataframe
         uploaded_data["loans"] = dataframe.to_dict("records")[:1000]
         if not uploaded_data.get("summary"):
-            uploaded_data["summary"] = validate_loan_data(dataframe)
+            summary, _ = validate_loan_data(dataframe)
+            uploaded_data["summary"] = summary
         return dataframe
     except Exception:
         return None
@@ -153,7 +317,7 @@ def get_uploaded_summary() -> dict[str, Any]:
     if dataframe is None:
         return {}
 
-    summary = validate_loan_data(dataframe)
+    summary, _ = validate_loan_data(dataframe)
     uploaded_data["summary"] = summary
     return summary
 
@@ -186,19 +350,21 @@ async def upload_portfolio_data(
         else:
             dataframe = process_csv_file(file_path)
 
-        validation_result = validate_loan_data(dataframe)
+        validation_result, normalized_dataframe = validate_loan_data(dataframe)
 
         if not validation_result.get("valid"):
             return {
                 "status": "error",
                 "filename": file.filename,
-                "file_size": len(contents),
+                "file_size_bytes": len(contents),
                 "error": validation_result.get("error"),
                 "details": validation_result,
             }
 
-        uploaded_data["loans"] = dataframe.to_dict("records")[:1000]
-        uploaded_data["dataframe"] = dataframe.copy()
+        safe_dataframe = normalized_dataframe if isinstance(normalized_dataframe, pd.DataFrame) else dataframe
+
+        uploaded_data["loans"] = safe_dataframe.to_dict("records")[:1000]
+        uploaded_data["dataframe"] = safe_dataframe.copy()
         uploaded_data["summary"] = {
             "upload_date": pd.Timestamp.now().isoformat(),
             "filename": file.filename,

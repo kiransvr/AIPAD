@@ -73,12 +73,15 @@ REDIS_URL=redis://localhost:6379/0
 ENVIRONMENT=development
 DEBUG=True
 SECRET_KEY=your-secret-key
+RATE_LIMIT_ENABLED=True
+RATE_LIMIT_MAX_REQUESTS=240
+RATE_LIMIT_WINDOW_SECONDS=60
 ```
 
 ### Frontend `.env`
 ```
-REACT_APP_API_URL=http://localhost:8000/api/v1
-REACT_APP_ENV=development
+VITE_API_BASE_URL=/api/v1
+VITE_APP_ENV=development
 ```
 
 ## Database Initialization

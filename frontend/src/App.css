@@ -916,6 +916,38 @@ body {
   margin-top: 1rem;
 }
 
+.upload-validation-table-wrap {
+  margin-top: 0.85rem;
+  overflow: auto;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+}
+
+.upload-validation-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 640px;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.upload-validation-table th,
+.upload-validation-table td {
+  text-align: left;
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+  vertical-align: top;
+}
+
+.upload-validation-table th {
+  background: rgba(15, 76, 129, 0.08);
+  color: var(--text-primary);
+  font-size: 0.86rem;
+}
+
+.upload-validation-table td {
+  font-size: 0.9rem;
+}
+
 .upload-details summary {
   cursor: pointer;
   color: var(--primary-color);

@@ -1,6 +1,7 @@
 """
 Configuration settings for the application
 """
+from pydantic import ConfigDict
 from pydantic_settings import BaseSettings
 from typing import List
 import os
@@ -8,6 +9,8 @@ import os
 
 class Settings(BaseSettings):
     """Application settings"""
+
+    model_config = ConfigDict(env_file=".env", case_sensitive=True)
     
     # App settings
     APP_NAME: str = "AI Portfolio Analytics Dashboard"
@@ -50,6 +53,11 @@ class Settings(BaseSettings):
     
     # Cache settings
     CACHE_TTL: int = 300  # 5 minutes
+
+    # Basic rate limiting
+    RATE_LIMIT_ENABLED: bool = os.getenv("RATE_LIMIT_ENABLED", "True").lower() == "true"
+    RATE_LIMIT_MAX_REQUESTS: int = int(os.getenv("RATE_LIMIT_MAX_REQUESTS", "240"))
+    RATE_LIMIT_WINDOW_SECONDS: int = int(os.getenv("RATE_LIMIT_WINDOW_SECONDS", "60"))
     
     # Pagination
     DEFAULT_PAGE_SIZE: int = 50
@@ -58,9 +66,4 @@ class Settings(BaseSettings):
     # Data pipeline
     BATCH_SIZE: int = 1000
     
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
-
-
 settings = Settings()

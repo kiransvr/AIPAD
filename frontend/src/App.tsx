@@ -10,7 +10,7 @@ import RiskManagementPage from './pages/RiskManagementPage'
 import RegionalViewPage from './pages/RegionalViewPage'
 import UploadDataPage from './pages/UploadDataPage'
 import SignInPage from './pages/SignInPage'
-import { getAuthHeaders } from './services/api'
+import { fetchAuthJson } from './services/api'
 
 type SessionUser = {
   username?: string
@@ -26,8 +26,6 @@ type DashboardMetrics = {
   nplRatio: number
   activeOfficers: number
 }
-
-const DASHBOARD_API_BASE = 'http://localhost:8000/api/v1'
 
 const getSessionUserFromStorage = (): SessionUser | null => {
   const rawUser = window.localStorage.getItem('ai-portfolio-user')
@@ -107,22 +105,11 @@ function DashboardHome() {
     setMetricsError(null)
 
     try {
-      const [parRes, nplRes, branchRes, officerRes] = await Promise.all([
-        fetch(`${DASHBOARD_API_BASE}/par/summary`, { headers: { ...getAuthHeaders() } }),
-        fetch(`${DASHBOARD_API_BASE}/npl/summary`, { headers: { ...getAuthHeaders() } }),
-        fetch(`${DASHBOARD_API_BASE}/branches/summary`, { headers: { ...getAuthHeaders() } }),
-        fetch(`${DASHBOARD_API_BASE}/officers/summary`, { headers: { ...getAuthHeaders() } }),
-      ])
-
-      if (!parRes.ok || !nplRes.ok || !branchRes.ok || !officerRes.ok) {
-        throw new Error('Unable to load live metrics.')
-      }
-
       const [parData, nplData, branchData, officerData] = await Promise.all([
-        parRes.json(),
-        nplRes.json(),
-        branchRes.json(),
-        officerRes.json(),
+        fetchAuthJson<{ total_par?: number }>('/par/summary'),
+        fetchAuthJson<{ npl_ratio?: number }>('/npl/summary'),
+        fetchAuthJson<{ branches?: Array<unknown> }>('/branches/summary'),
+        fetchAuthJson<{ total_officers?: number; officers?: Array<unknown> }>('/officers/summary'),
       ])
 
       setMetrics({
