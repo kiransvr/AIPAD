@@ -28,6 +28,7 @@ class Settings(BaseSettings):
     
     # CORS settings
     CORS_ORIGINS: List[str] = [
+        # Development
         "http://localhost",
         "http://localhost:3000",
         "http://localhost:5173",
@@ -38,12 +39,19 @@ class Settings(BaseSettings):
         "http://127.0.0.1:4173",
         "http://localhost:8000",
         "http://localhost:8080",
+        # Production
+        "https://aipad-kappa.vercel.app",
+        "https://aipad.vercel.app",
+        "https://aipad-git-main-kirans-projects-879f2a5b.vercel.app",
+        "https://aipad-a2sc6zcj3-kirans-projects-879f2a5b.vercel.app",
     ]
     
     ALLOWED_HOSTS: List[str] = [
         "localhost",
         "127.0.0.1",
         "dashboard.local",
+        "aipad-api.onrender.com",
+        "aipad-api.onrender.app",
     ]
     
     # JWT settings
