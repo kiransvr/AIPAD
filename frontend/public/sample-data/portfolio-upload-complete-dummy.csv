@@ -1,0 +1,51 @@
+AccountNo,AccountName,BranchName,LoanAmount,OutstandingBalance,AgeDays,DefaultedInst,Officer,LoanProduct,Gender,Sector
+1000001,Abel Tadesse,Addis Ababa - Bole,250000,215000,12,0,Abebe Kebede,Working Capital,M,Retail
+1000002,Hana Bekele,Addis Ababa - Bole,180000,162500,35,1,Abebe Kebede,Group Loan,F,Trade
+1000003,Mekdes Alemu,Adama Branch,320000,289000,5,0,Tigist Hailu,SME Expansion,F,Manufacturing
+1000004,Samuel Nega,Adama Branch,140000,132200,78,2,Tigist Hailu,Agri Loan,M,Agriculture
+1000005,Rahel Mulu,Hawassa Main,210000,188900,16,0,Dawit Asfaw,Women Enterprise,F,Services
+1000006,Getachew Yonas,Hawassa Main,90000,84500,96,3,Dawit Asfaw,Micro Loan,M,Hospitality
+1000007,Betelhem Fekadu,Bahir Dar Central,275000,239700,42,1,Meseret Ali,Working Capital,F,Retail
+1000008,Daniel Tesfaye,Bahir Dar Central,125000,120300,0,0,Meseret Ali,Education Loan,M,Education
+1000009,Sara Gemechu,Mekelle Prime,360000,332000,28,0,Yared Solomon,SME Expansion,F,Manufacturing
+1000010,Henok Melese,Mekelle Prime,155000,148900,123,4,Yared Solomon,Transport Loan,M,Transport
+1000011,Mahlet Kebede,Jimma Branch,220000,201800,11,0,Selamawit Dereje,Women Enterprise,F,Trade
+1000012,Kirubel Teka,Jimma Branch,98000,95700,47,1,Selamawit Dereje,Micro Loan,M,Agriculture
+1000013,Netsanet Girma,Gondar City,305000,278100,66,2,Lulit Bekele,SME Expansion,F,Construction
+1000014,Eyob Worku,Gondar City,172000,169500,8,0,Lulit Bekele,Working Capital,M,Services
+1000015,Meron Tadesse,Dire Dawa East,260000,236600,38,1,Hanna Sisay,Women Enterprise,F,Manufacturing
+1000016,Solomon Haile,Dire Dawa East,110000,108200,149,5,Hanna Sisay,Micro Loan,M,Trade
+1000017,Selam Fekadu,Addis Ababa - Piassa,240000,221000,18,0,Naod Bekele,Group Loan,F,Retail
+1000018,Abenezer Lemma,Addis Ababa - Piassa,134000,129900,83,2,Naod Bekele,Agri Loan,M,Agriculture
+1000019,Tsion Yitbarek,Debre Markos,195000,183400,9,0,Eden Taye,Education Loan,F,Education
+1000020,Tamirat Bekele,Debre Markos,87000,84500,102,3,Eden Taye,Micro Loan,M,Transport
+1000021,Hiwot Mekonnen,Arba Minch,280000,252200,27,0,Biniam Kassa,Working Capital,F,Hospitality
+1000022,Surafel Mamo,Arba Minch,165000,158600,54,1,Biniam Kassa,SME Expansion,M,Construction
+1000023,Ruth Asrat,Adigrat Office,230000,206900,31,1,Feven Hailemariam,Women Enterprise,F,Trade
+1000024,Yohannes Desta,Adigrat Office,120000,117400,3,0,Feven Hailemariam,Group Loan,M,Retail
+1000025,Liya Gebru,Dessie Main,310000,281600,70,2,Kalkidan Nigatu,SME Expansion,F,Manufacturing
+1000026,Eshetu Abate,Dessie Main,145000,141200,14,0,Kalkidan Nigatu,Working Capital,M,Services
+1000027,Rediet Fantu,Nekemte Branch,205000,189300,25,0,Fitsum Tadesse,Agri Loan,F,Agriculture
+1000028,Belayneh Adugna,Nekemte Branch,101000,99500,118,4,Fitsum Tadesse,Micro Loan,M,Trade
+1000029,Chaltu Benti,Shashemene Office,265000,243100,44,1,Eyob Kassahun,Women Enterprise,F,Retail
+1000030,Brook Tessema,Shashemene Office,132000,126700,60,2,Eyob Kassahun,Transport Loan,M,Transport
+1000031,Senait Birhanu,Harar City,222000,204900,21,0,Fikirte Wolde,Education Loan,F,Education
+1000032,Habtamu Endale,Harar City,97000,94600,90,3,Fikirte Wolde,Micro Loan,M,Hospitality
+1000033,Yemariam Ayalew,Axum Branch,295000,270400,33,1,Mulugeta Assefa,SME Expansion,F,Construction
+1000034,Biruk Shiferaw,Axum Branch,158000,151300,7,0,Mulugeta Assefa,Working Capital,M,Services
+1000035,Genet Tilahun,Assosa Branch,188000,176700,52,1,Azeb Tefera,Group Loan,F,Trade
+1000036,Zelalem G/Mariam,Assosa Branch,93000,90100,137,4,Azeb Tefera,Micro Loan,M,Agriculture
+1000037,Frehiwot Hailu,Jijiga Office,245000,226300,29,0,Helen Guta,Women Enterprise,F,Retail
+1000038,Mohammed Ahmed,Jijiga Office,174000,166200,85,2,Helen Guta,Transport Loan,M,Transport
+1000039,Tsige Berhane,Semera Branch,208000,191400,19,0,Robel Meles,Working Capital,F,Services
+1000040,Nathan Samuel,Semera Branch,116000,112500,99,3,Robel Meles,Agri Loan,M,Agriculture
+1000041,Emebet Kassahun,Shire Hub,330000,298700,40,1,Sara Tsegaye,SME Expansion,F,Manufacturing
+1000042,Alemu Tura,Shire Hub,126000,121900,2,0,Sara Tsegaye,Micro Loan,M,Trade
+1000043,Selamawit Kifle,Asella Branch,214000,198600,48,1,Henok Arega,Women Enterprise,F,Retail
+1000044,Melkamu Worku,Asella Branch,104000,100800,73,2,Henok Arega,Group Loan,M,Services
+1000045,Hanan Osman,Dilla Office,286000,261100,24,0,Rahel Zewdu,SME Expansion,F,Hospitality
+1000046,Girma Teshome,Dilla Office,149000,143200,112,4,Rahel Zewdu,Transport Loan,M,Transport
+1000047,Yodit Andualem,Kombolcha Branch,238000,219700,15,0,Samuel Nigussie,Education Loan,F,Education
+1000048,Abraham Fisseha,Kombolcha Branch,119000,115400,67,2,Samuel Nigussie,Working Capital,M,Construction
+1000049,Lemlem Molla,Wolaita Sodo,272000,249900,36,1,Betelhem Dejene,Women Enterprise,F,Trade
+1000050,Tesfahun Guta,Wolaita Sodo,136000,130500,94,3,Betelhem Dejene,Micro Loan,M,Agriculture

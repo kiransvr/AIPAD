@@ -1,0 +1,6 @@
+AccountNo,AccountName,BranchName,LoanAmount,OutstandingBalance,AgeDays,DefaultedInst,Officer,LoanProduct,Gender,Sector
+452150010,John Doe,Addis Ababa - Bole,100000,45000,15,0,Abebe Kebede,Working Capital,M,Agriculture
+452150011,Selam Tesfaye,Addis Ababa - Megenagna,150000,120000,42,1,Mekdes Ayele,SME Loan,F,Trade
+452150012,Abdi Hassan,Adama Central,80000,16000,8,0,Hana Bekele,Agricultural Loan,M,Agriculture
+452150013,Meseret Tadesse,Hawassa Branch,220000,180000,67,2,Samuel Teshome,Enterprise Loan,F,Services
+452150014,Kebede Alemu,Bahir Dar Main,50000,5000,3,0,Rahel Desta,Micro Loan,M,Manufacturing

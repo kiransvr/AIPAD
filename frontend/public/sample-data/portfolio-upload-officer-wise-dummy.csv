@@ -1,0 +1,25 @@
+AccountNo,AccountName,BranchName,LoanAmount,OutstandingBalance,AgeDays,DefaultedInst,Officer,LoanProduct,Gender,Sector,Country,Latitude,Longitude
+OF001001,Abel Tadesse,Addis Ababa - Bole,160000,149800,11,0,Abebe Kebede,Working Capital,M,Retail,Ethiopia,8.9806,38.7578
+OF001002,Hana Bekele,Addis Ababa - Bole,225000,208900,34,1,Abebe Kebede,Group Loan,F,Trade,Ethiopia,8.9806,38.7578
+OF001003,Samuel Nega,Addis Ababa - Bole,310000,285700,66,2,Abebe Kebede,SME Expansion,M,Manufacturing,Ethiopia,8.9806,38.7578
+OF001004,Rahel Mulu,Addis Ababa - Bole,118000,110300,93,3,Abebe Kebede,Women Enterprise,F,Services,Ethiopia,8.9806,38.7578
+OF002001,Getachew Yonas,Adama Branch,98000,94100,4,0,Tigist Hailu,Micro Loan,M,Agriculture,Ethiopia,8.5414,39.2681
+OF002002,Betelhem Fekadu,Adama Branch,142000,133600,28,0,Tigist Hailu,Agri Loan,F,Agriculture,Ethiopia,8.5414,39.2681
+OF002003,Daniel Tesfaye,Adama Branch,270000,250800,52,1,Tigist Hailu,Transport Loan,M,Transport,Ethiopia,8.5414,39.2681
+OF002004,Sara Gemechu,Adama Branch,195000,180000,121,4,Tigist Hailu,Education Loan,F,Education,Ethiopia,8.5414,39.2681
+OF003001,Henok Melese,Hawassa Main,240000,224100,7,0,Dawit Asfaw,Working Capital,M,Hospitality,Ethiopia,7.0504,38.4952
+OF003002,Mahlet Kebede,Hawassa Main,188000,172500,39,1,Dawit Asfaw,Women Enterprise,F,Trade,Ethiopia,7.0504,38.4952
+OF003003,Kirubel Teka,Hawassa Main,132000,125700,73,2,Dawit Asfaw,Micro Loan,M,Services,Ethiopia,7.0504,38.4952
+OF003004,Netsanet Girma,Hawassa Main,286000,261900,145,5,Dawit Asfaw,SME Expansion,F,Construction,Ethiopia,7.0504,38.4952
+OF004001,Eyob Worku,Bahir Dar Central,154000,147600,16,0,Meseret Ali,Working Capital,M,Services,Ethiopia,11.5742,37.3614
+OF004002,Meron Tadesse,Bahir Dar Central,210000,194500,43,1,Meseret Ali,Women Enterprise,F,Retail,Ethiopia,11.5742,37.3614
+OF004003,Solomon Haile,Bahir Dar Central,126000,121400,84,2,Meseret Ali,Group Loan,M,Trade,Ethiopia,11.5742,37.3614
+OF004004,Selam Fekadu,Bahir Dar Central,298000,273100,112,4,Meseret Ali,SME Expansion,F,Manufacturing,Ethiopia,11.5742,37.3614
+OF005001,Abenezer Lemma,Mekelle Prime,175000,166800,13,0,Yared Solomon,Agri Loan,M,Agriculture,Ethiopia,13.4967,39.4753
+OF005002,Tsion Yitbarek,Mekelle Prime,232000,214700,48,1,Yared Solomon,Education Loan,F,Education,Ethiopia,13.4967,39.4753
+OF005003,Tamirat Bekele,Mekelle Prime,109000,103900,90,3,Yared Solomon,Micro Loan,M,Transport,Ethiopia,13.4967,39.4753
+OF005004,Hiwot Mekonnen,Mekelle Prime,320000,297500,130,4,Yared Solomon,Working Capital,F,Hospitality,Ethiopia,13.4967,39.4753
+OF006001,Surafel Mamo,Dire Dawa East,205000,191400,18,0,Hanna Sisay,Women Enterprise,M,Trade,Ethiopia,9.6009,41.8501
+OF006002,Ruth Asrat,Dire Dawa East,146000,138200,31,1,Hanna Sisay,Group Loan,F,Retail,Ethiopia,9.6009,41.8501
+OF006003,Yohannes Desta,Dire Dawa East,268000,251000,76,2,Hanna Sisay,Transport Loan,M,Transport,Ethiopia,9.6009,41.8501
+OF006004,Liya Gebru,Dire Dawa East,122000,115600,101,3,Hanna Sisay,Micro Loan,F,Services,Ethiopia,9.6009,41.8501

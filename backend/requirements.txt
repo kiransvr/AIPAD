@@ -1,0 +1,50 @@
+# Core Framework
+fastapi==0.104.0
+uvicorn[standard]==0.24.0
+python-multipart==0.0.29
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+pydantic==2.3.0
+pydantic-settings==2.0.3
+
+# Database
+sqlalchemy==2.0.21
+asyncpg==0.30.0
+alembic==1.12.1
+psycopg2-binary==2.9.9
+sqlmodel==0.0.14
+
+# Caching
+redis==5.0.0
+hiredis==2.2.3
+
+# Data Processing
+pandas==2.0.3
+numpy==1.24.3
+polars==0.19.14
+scipy==1.11.3
+scikit-learn==1.3.2
+
+# Analytics & ML
+statsmodels==0.14.0
+pyarrow==13.0.0
+
+# Async & Background Tasks
+celery==5.3.6
+flower==2.0.1
+
+# Monitoring & Logging
+python-json-logger==2.0.7
+prometheus-client==0.17.1
+
+# Testing
+pytest==7.4.2
+pytest-asyncio==0.21.1
+pytest-cov==4.1.0
+httpx==0.24.1
+
+# Utilities
+python-dotenv==1.0.0
+requests==2.31.0
+pytz==2023.3
+python-dateutil==2.8.2

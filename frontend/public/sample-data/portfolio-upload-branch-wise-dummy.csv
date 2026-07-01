@@ -1,0 +1,25 @@
+AccountNo,AccountName,BranchName,LoanAmount,OutstandingBalance,AgeDays,DefaultedInst,Officer,LoanProduct,Gender,Sector,Country,Latitude,Longitude
+BR001001,Abel Tadesse,Addis Ababa - Bole,250000,214500,12,0,Abebe Kebede,Working Capital,M,Retail,Ethiopia,8.9806,38.7578
+BR001002,Hana Bekele,Addis Ababa - Bole,180000,165400,38,1,Abebe Kebede,Group Loan,F,Trade,Ethiopia,8.9806,38.7578
+BR001003,Mekdes Alemu,Addis Ababa - Bole,320000,301200,71,2,Abebe Kebede,SME Expansion,F,Manufacturing,Ethiopia,8.9806,38.7578
+BR002001,Samuel Nega,Adama Branch,140000,132200,18,0,Tigist Hailu,Agri Loan,M,Agriculture,Ethiopia,8.5414,39.2681
+BR002002,Rahel Mulu,Adama Branch,210000,193600,44,1,Tigist Hailu,Women Enterprise,F,Services,Ethiopia,8.5414,39.2681
+BR002003,Getachew Yonas,Adama Branch,90000,85100,97,3,Tigist Hailu,Micro Loan,M,Hospitality,Ethiopia,8.5414,39.2681
+BR003001,Betelhem Fekadu,Hawassa Main,275000,249700,9,0,Dawit Asfaw,Working Capital,F,Retail,Ethiopia,7.0504,38.4952
+BR003002,Daniel Tesfaye,Hawassa Main,125000,119600,53,1,Dawit Asfaw,Education Loan,M,Education,Ethiopia,7.0504,38.4952
+BR003003,Sara Gemechu,Hawassa Main,360000,334000,104,3,Dawit Asfaw,SME Expansion,F,Manufacturing,Ethiopia,7.0504,38.4952
+BR004001,Henok Melese,Bahir Dar Central,155000,149100,27,0,Meseret Ali,Transport Loan,M,Transport,Ethiopia,11.5742,37.3614
+BR004002,Mahlet Kebede,Bahir Dar Central,220000,204300,36,1,Meseret Ali,Women Enterprise,F,Trade,Ethiopia,11.5742,37.3614
+BR004003,Kirubel Teka,Bahir Dar Central,98000,94200,126,4,Meseret Ali,Micro Loan,M,Agriculture,Ethiopia,11.5742,37.3614
+BR005001,Netsanet Girma,Mekelle Prime,305000,282900,16,0,Yared Solomon,SME Expansion,F,Construction,Ethiopia,13.4967,39.4753
+BR005002,Eyob Worku,Mekelle Prime,172000,165500,61,2,Yared Solomon,Working Capital,M,Services,Ethiopia,13.4967,39.4753
+BR005003,Meron Tadesse,Mekelle Prime,260000,241100,141,5,Yared Solomon,Women Enterprise,F,Manufacturing,Ethiopia,13.4967,39.4753
+BR006001,Solomon Haile,Dire Dawa East,110000,107000,8,0,Hanna Sisay,Micro Loan,M,Trade,Ethiopia,9.6009,41.8501
+BR006002,Selam Fekadu,Dire Dawa East,240000,221500,47,1,Hanna Sisay,Group Loan,F,Retail,Ethiopia,9.6009,41.8501
+BR006003,Abenezer Lemma,Dire Dawa East,134000,128400,92,3,Hanna Sisay,Agri Loan,M,Agriculture,Ethiopia,9.6009,41.8501
+BR007001,Tsion Yitbarek,Jimma Branch,195000,181800,22,0,Selamawit Dereje,Education Loan,F,Education,Ethiopia,7.6731,36.8344
+BR007002,Tamirat Bekele,Jimma Branch,87000,82900,58,2,Selamawit Dereje,Micro Loan,M,Transport,Ethiopia,7.6731,36.8344
+BR007003,Hiwot Mekonnen,Jimma Branch,280000,255000,109,4,Selamawit Dereje,Working Capital,F,Hospitality,Ethiopia,7.6731,36.8344
+BR008001,Surafel Mamo,Gondar City,165000,153600,14,0,Lulit Bekele,SME Expansion,M,Construction,Ethiopia,12.603,37.4521
+BR008002,Ruth Asrat,Gondar City,230000,216200,42,1,Lulit Bekele,Women Enterprise,F,Trade,Ethiopia,12.603,37.4521
+BR008003,Yohannes Desta,Gondar City,120000,114900,88,2,Lulit Bekele,Group Loan,M,Retail,Ethiopia,12.603,37.4521

@@ -1,0 +1,12 @@
+{
+  "total_accounts": 400,
+  "total_portfolio_amount": 98481445.04819548,
+  "average_loan_size": 246203.6126204887,
+  "total_payments": 3862838.503993602,
+  "active_accounts": 281,
+  "defaulted_accounts": 39,
+  "npl_accounts": 54,
+  "total_payment_records": 4070,
+  "total_risk_snapshots": 2453,
+  "generated_at": "2026-05-18T17:09:49.934544"
+}

@@ -1,0 +1,19 @@
+# Data pipeline dependencies
+apache-airflow==2.7.0
+apache-airflow-providers-postgres==5.7.0
+apache-airflow-providers-redis==3.3.0
+
+# Processing
+pandas==2.0.3
+numpy==1.24.3
+polars==0.19.14
+
+# Database
+sqlalchemy==2.0.21
+psycopg2-binary==2.9.9
+
+# Cache
+redis==5.0.0
+
+# Data quality
+great-expectations==0.17.12
