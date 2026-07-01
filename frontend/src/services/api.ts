@@ -1,5 +1,19 @@
 const envApiBase = import.meta.env.VITE_API_BASE_URL?.trim()
-const normalizedApiBase = envApiBase ? envApiBase.replace(/\/+$/, '') : '/api/v1'
+
+// Determine the API base URL
+let normalizedApiBase: string
+if (envApiBase) {
+  normalizedApiBase = envApiBase.replace(/\/+$/, '')
+} else if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+  // Development environment
+  normalizedApiBase = '/api/v1'
+} else if (typeof window !== 'undefined' && window.location.hostname.includes('vercel')) {
+  // Production environment on Vercel - use the production backend URL
+  normalizedApiBase = 'https://aipad-api.onrender.com/api/v1'
+} else {
+  // Fallback
+  normalizedApiBase = '/api/v1'
+}
 
 export const API_BASE = normalizedApiBase
 const TOKEN_KEY = 'ai-portfolio-token'
