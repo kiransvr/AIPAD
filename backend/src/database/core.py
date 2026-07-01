@@ -5,14 +5,36 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sess
 from sqlmodel import SQLModel, select
 from src.config import settings
 import logging
+import ssl
 
 logger = logging.getLogger(__name__)
 
+# Parse database URL and extract SSL parameters for asyncpg
+db_url = settings.DATABASE_URL
+connect_args = {}
+
+# For asyncpg with Neon, we need to configure SSL properly
+if "postgresql+asyncpg://" in db_url and "neon.tech" in db_url:
+    # Create SSL context for Neon (which requires SSL)
+    ssl_context = ssl.create_default_context()
+    ssl_context.check_hostname = True
+    ssl_context.verify_mode = ssl.CERT_REQUIRED
+    
+    # Remove URL parameters that asyncpg doesn't recognize
+    if "?" in db_url:
+        db_url = db_url.split("?")[0]
+    
+    connect_args = {
+        "ssl": ssl_context,
+        "timeout": 30,
+    }
+
 # Create async engine
 engine = create_async_engine(
-    settings.DATABASE_URL,
+    db_url,
     echo=settings.DEBUG,
     future=True,
+    connect_args=connect_args,
 )
 
 # Create async session factory
